@@ -1,3 +1,5 @@
+import { useSearchParams } from "react-router";
+import SearchField from "../components/SearchField";
 import CountryCard from "../components/CountryCards";
 import { useCountries } from "../hooks/useCountries";
 
@@ -8,6 +10,17 @@ export default function HomePage() {
     isError,
     refetch,
   } = useCountries();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("query") ?? "";
+
+  function handleSearch(value: string) {
+    if (value) {
+      setSearchParams({ query: value }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  }
 
   if (isPending) {
     return (
@@ -41,6 +54,10 @@ export default function HomePage() {
     );
   }
 
+  const filteredCountries = countries.filter((country) =>
+    country.name.toLowerCase().includes(query.trim().toLowerCase())
+  );
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="mb-2 text-3xl font-bold">
@@ -51,13 +68,21 @@ export default function HomePage() {
         Upptäck världens {countries.length} länder
       </p>
 
-      <ul className="grid grid-cols-5 gap-2 sm:grid-cols-7 lg:grid-cols-10 xl:grid-cols-12">
-        {countries.map((country) => (
-          <li key={country.alpha3Code} className="min-w-0">
-            <CountryCard country={country} />
-          </li>
-        ))}
-      </ul>
+      <SearchField value={query} onChange={handleSearch} />
+
+      {filteredCountries.length === 0 ? (
+        <p className="text-gray-600">
+          Inga länder matchar dina kriterier
+        </p>
+      ) : (
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {filteredCountries.map((country) => (
+            <li key={country.alpha3Code} className="min-w-0">
+              <CountryCard country={country} />
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }
