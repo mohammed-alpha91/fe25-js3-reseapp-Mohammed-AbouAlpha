@@ -29,6 +29,7 @@ export default function HomePage() {
         <p role="alert" className="mb-4 text-red-600">
           Kunde inte hämta länder.
         </p>
+
         <button
           type="button"
           onClick={() => void refetch()}
@@ -46,13 +47,13 @@ export default function HomePage() {
         Utforska världen
       </h1>
 
-      <p className="mb-8 text-gray-600">
+      <p className="mb-6 text-gray-600">
         Upptäck världens {countries.length} länder
       </p>
 
-      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid grid-cols-5 gap-2 sm:grid-cols-7 lg:grid-cols-10 xl:grid-cols-12">
         {countries.map((country) => (
-          <li key={country.alpha3Code}>
+          <li key={country.alpha3Code} className="min-w-0">
             <CountryCard country={country} />
           </li>
         ))}
