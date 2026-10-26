@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useSearchParams } from "react-router";
 import SearchField from "../components/SearchField";
 import CountryCard from "../components/CountryCards";
 import { useCountries } from "../hooks/useCountries";
+
+const COUNTRIES_PER_PAGE = 15;
 
 export default function HomePage() {
   const {
@@ -14,12 +17,16 @@ export default function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("query") ?? "";
 
+  const [currentPage, setCurrentPage] = useState(1);
+
   function handleSearch(value: string) {
     if (value) {
       setSearchParams({ query: value }, { replace: true });
     } else {
       setSearchParams({}, { replace: true });
     }
+
+    setCurrentPage(1);
   }
 
   if (isPending) {
@@ -58,15 +65,22 @@ export default function HomePage() {
     country.name.toLowerCase().includes(query.trim().toLowerCase())
   );
 
+  const totalPages = Math.ceil(
+    filteredCountries.length / COUNTRIES_PER_PAGE
+  );
+
+  const startIndex = (currentPage - 1) * COUNTRIES_PER_PAGE;
+
+  const currentCountries = filteredCountries.slice(
+    startIndex,
+    startIndex + COUNTRIES_PER_PAGE
+  );
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="mb-2 text-3xl font-bold">
-        Utforska världen
+        Utforska världens länder
       </h1>
-
-      <p className="mb-6 text-gray-600">
-        Upptäck världens {countries.length} länder
-      </p>
 
       <SearchField value={query} onChange={handleSearch} />
 
@@ -75,13 +89,45 @@ export default function HomePage() {
           Inga länder matchar dina kriterier
         </p>
       ) : (
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {filteredCountries.map((country) => (
-            <li key={country.alpha3Code} className="min-w-0">
-              <CountryCard country={country} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {currentCountries.map((country) => (
+              <li key={country.alpha3Code} className="min-w-0">
+                <CountryCard country={country} />
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={() =>
+                setCurrentPage((page) => Math.max(1, page - 1))
+              }
+              disabled={currentPage === 1}
+              className="rounded-lg border px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Föregående
+            </button>
+
+            <span className="text-sm text-gray-600">
+              Sida {currentPage} av {totalPages}
+            </span>
+
+            <button
+              type="button"
+              onClick={() =>
+                setCurrentPage((page) =>
+                  Math.min(totalPages, page + 1)
+                )
+              }
+              disabled={currentPage === totalPages}
+              className="rounded-lg border px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Nästa
+            </button>
+          </div>
+        </>
       )}
     </main>
   );

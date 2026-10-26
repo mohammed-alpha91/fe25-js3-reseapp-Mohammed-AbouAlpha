@@ -12,7 +12,7 @@ function App() {
           className="mx-auto max-w-7xl px-4 py-5"
         >
           <Link to="/" className="text-2xl font-bold text-blue-600">
-            Reseapp
+            Välkommen till din reseapp!
           </Link>
         </nav>
       </header>
