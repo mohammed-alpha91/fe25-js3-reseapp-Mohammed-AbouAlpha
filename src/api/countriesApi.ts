@@ -1,7 +1,8 @@
+
 import type { Countries } from "../types/countries";
 
 const API_URL =
-  "https://countries.dev/countries?fields=name,alpha3Code,region,capital,flags,population,area";
+  "https://countries.dev/countries?fields=name,alpha3Code,region,subregion,capital,flags,population,area,nativeName,latlng,languages,currencies";
 
 export async function getCountries(): Promise<Countries[]> {
   const response = await fetch(API_URL);

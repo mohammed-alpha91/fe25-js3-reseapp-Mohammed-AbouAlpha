@@ -2,6 +2,7 @@
 
 import { Link, Route, Routes } from "react-router";
 import HomePage from "./pages/FrontPage";
+import CountryPage from "./pages/CountryPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/country/:code" element={<CountryPage />} />
       </Routes>
     </>
   );
