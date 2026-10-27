@@ -1,12 +1,15 @@
-import { useState } from "react";
+
 import { useSearchParams } from "react-router";
 import SearchField from "../components/SearchField";
 import CountryCard from "../components/CountryCards";
 import { useCountries } from "../hooks/useCountries";
 
-const COUNTRIES_PER_PAGE = 15;
+// antal länder som visas på varje sida
+const COUNTRIES_PER_PAGE = 16;
 
 export default function HomePage() {
+    // Hämtar länder och information om laddning och fel eller refetchar
+
   const {
     data: countries,
     isPending,
@@ -15,24 +18,44 @@ export default function HomePage() {
   } = useCountries();
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+// Hämtar sökordet från URLen,
   const query = searchParams.get("query") ?? "";
 
-  const [currentPage, setCurrentPage] = useState(1);
+  // Hämtar sidnumret   
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
   function handleSearch(value: string) {
+    const newParams = new URLSearchParams(searchParams);
+
     if (value) {
-      setSearchParams({ query: value }, { replace: true });
+      newParams.set("query", value);
     } else {
-      setSearchParams({}, { replace: true });
+      newParams.delete("query");
     }
 
-    setCurrentPage(1);
+    newParams.delete("page");
+
+    setSearchParams(newParams);
+  }
+
+  function handlePageChange(newPage: number) {
+    // Kopierar url parametrarna så sökningen och sidonummer behålls
+
+    const newParams = new URLSearchParams(searchParams);
+
+   // Uppdaterar sidnumret i URLen
+ newParams.set("page", String(newPage));
+
+    setSearchParams(newParams);
   }
 
   if (isPending) {
     return (
       <main className="p-8">
         <div role="status" className="flex items-center gap-3">
+    {/* Animerad laddningssymbol från Tailwind CSS  */}
+
           <span
             aria-hidden="true"
             className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
@@ -61,16 +84,21 @@ export default function HomePage() {
     );
   }
 
+  // Filtrerar listan så att bara länder som matchar sökningen finns kvar
   const filteredCountries = countries.filter((country) =>
     country.name.toLowerCase().includes(query.trim().toLowerCase())
   );
 
+    // Räknar ut hur många sidor som behövs
   const totalPages = Math.ceil(
     filteredCountries.length / COUNTRIES_PER_PAGE
   );
 
+  const currentPage = Math.min(page, Math.max(1, totalPages));
+
   const startIndex = (currentPage - 1) * COUNTRIES_PER_PAGE;
 
+  // Väljer ut endast länderna som ska visas på den aktuella sidan
   const currentCountries = filteredCountries.slice(
     startIndex,
     startIndex + COUNTRIES_PER_PAGE
@@ -101,10 +129,8 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <button
               type="button"
-              onClick={() =>
-                setCurrentPage((page) => Math.max(1, page - 1))
-              }
-              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage <= 1}
               className="rounded-lg border px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Föregående
@@ -116,12 +142,8 @@ export default function HomePage() {
 
             <button
               type="button"
-              onClick={() =>
-                setCurrentPage((page) =>
-                  Math.min(totalPages, page + 1)
-                )
-              }
-              disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage >= totalPages}
               className="rounded-lg border px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Nästa
