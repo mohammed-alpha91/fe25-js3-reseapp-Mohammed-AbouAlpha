@@ -1,15 +1,25 @@
-
 import { useSearchParams } from "react-router";
 import SearchField from "../components/SearchField";
 import CountryCard from "../components/CountryCards";
 import { useCountries } from "../hooks/useCountries";
 
-// antal länder som visas på varje sida
+// Antal länder som visas på varje sida
 const COUNTRIES_PER_PAGE = 16;
 
-export default function HomePage() {
-    // Hämtar länder och information om laddning och fel eller refetchar
+// Lista med regioner man kan välja mellan.
+// label är texten som visas på knappen.
+// Tomt value betyder All, då visas alla regioner.
+const regions = [
+  { value: "", label: "All" },
+  { value: "Africa", label: "Africa" },
+  { value: "Americas", label: "Americas" },
+  { value: "Asia", label: "Asia" },
+  { value: "Europe", label: "Europe" },
+  { value: "Oceania", label: "Oceania" },
+];
 
+export default function HomePage() {
+  // Hämtar länder och information om laddning och fel
   const {
     data: countries,
     isPending,
@@ -19,12 +29,15 @@ export default function HomePage() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-// Hämtar sökordet från URLen,
+  // Hämtar sökord och sidnummer från URL:en
   const query = searchParams.get("query") ?? "";
 
-  // Hämtar sidnumret   
+  // Hämtar vald region från URLen.
+  const region = searchParams.get("region") ?? "";
+
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
+  // Uppdaterar sökningen och börjar om på sida 1
   function handleSearch(value: string) {
     const newParams = new URLSearchParams(searchParams);
 
@@ -35,27 +48,41 @@ export default function HomePage() {
     }
 
     newParams.delete("page");
-
     setSearchParams(newParams);
   }
 
-  function handlePageChange(newPage: number) {
-    // Kopierar url parametrarna så sökningen och sidonummer behålls
-
+  // Byter vald region när användaren klickar på en regionknapp.
+  function handleRegionChange(newRegion: string) {
+    // Kopierar befintliga URL-parametrar så sökningen behålls.
     const newParams = new URLSearchParams(searchParams);
 
-   // Uppdaterar sidnumret i URLen
- newParams.set("page", String(newPage));
+    // Om en region valts sparas den i URLen.
+    if (newRegion) {
+      newParams.set("region", newRegion);
+    } else {
+      // Om användaren väljer All tas regionfiltret bort.
+      newParams.delete("region");
+    }
 
+    // Återställer sidnumret eftersom resultatlistan kan ändras.
+    newParams.delete("page");
+
+    // Uppdaterar URLen med den nya regionen.
     setSearchParams(newParams);
   }
 
+  // Ändrar sida men behåller sökning och region
+  function handlePageChange(newPage: number) {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", String(newPage));
+    setSearchParams(newParams);
+  }
+
+  // Visas medan länderna hämtas
   if (isPending) {
     return (
       <main className="p-8">
         <div role="status" className="flex items-center gap-3">
-    {/* Animerad laddningssymbol från Tailwind CSS  */}
-
           <span
             aria-hidden="true"
             className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
@@ -66,6 +93,7 @@ export default function HomePage() {
     );
   }
 
+  // Visas om hämtningen misslyckas
   if (isError) {
     return (
       <main className="p-8">
@@ -84,21 +112,33 @@ export default function HomePage() {
     );
   }
 
-  // Filtrerar listan så att bara länder som matchar sökningen finns kvar
-  const filteredCountries = countries.filter((country) =>
-    country.name.toLowerCase().includes(query.trim().toLowerCase())
-  );
+  // Filtrerar länderna efter både sökord och vald region.
+  const filteredCountries = countries.filter((country) => {
+    // Kontrollerar om landets namn innehåller sökordet.
+    const matchesName = country.name
+      .toLowerCase()
+      .includes(query.trim().toLowerCase());
 
-    // Räknar ut hur många sidor som behövs
+    // Kontrollerar om landet tillhör den valda regionen.
+    // Om region är tom visas alla regioner.
+    const matchesRegion =
+      region === "" || country.region === region;
+
+    // Landet visas bara om både namnet och regionen matchar.
+    return matchesName && matchesRegion;
+  });
+
+  // Räknar ut hur många sidor som behövs
   const totalPages = Math.ceil(
     filteredCountries.length / COUNTRIES_PER_PAGE
   );
 
+  // Ser till att sidnumret inte hamnar utanför tillgängliga sidor
   const currentPage = Math.min(page, Math.max(1, totalPages));
 
   const startIndex = (currentPage - 1) * COUNTRIES_PER_PAGE;
 
-  // Väljer ut endast länderna som ska visas på den aktuella sidan
+  // Väljer bara länderna som ska visas på den aktuella sidan
   const currentCountries = filteredCountries.slice(
     startIndex,
     startIndex + COUNTRIES_PER_PAGE
@@ -110,14 +150,40 @@ export default function HomePage() {
         Utforska världens länder
       </h1>
 
+      {/* Sökfält för att söka efter länder */}
       <SearchField value={query} onChange={handleSearch} />
 
+      {/*  Visar en knapp för varje region i regions listan. */}
+      <div className="my-6 flex flex-wrap gap-2">
+        {regions.map((item) => (
+          <button
+            key={item.value}
+            type="button"
+            // När knappen klickas byts regionfiltret.
+            onClick={() => handleRegionChange(item.value)}
+            // Berättar för skärmläsare om knappen är vald.
+            aria-pressed={region === item.value}
+            //  Vald region blir blå, övriga knappar är vita.
+           className={`rounded-lg border px-4 py-2 ${
+  region === item.value
+    ? "border-purple-600 bg-purple-600 text-white"
+    : "border-gray-300 bg-white hover:bg-purple-50"
+}`}
+          >
+            {/* Visar knappens namn. */}
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Visar ett meddelande om inget land matchar */}
       {filteredCountries.length === 0 ? (
         <p className="text-gray-600">
           Inga länder matchar dina kriterier
         </p>
       ) : (
         <>
+          {/* Visar länderna på den aktuella sidan */}
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {currentCountries.map((country) => (
               <li key={country.alpha3Code} className="min-w-0">
@@ -126,6 +192,7 @@ export default function HomePage() {
             ))}
           </ul>
 
+          {/* Knappar för att byta sida */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <button
               type="button"
