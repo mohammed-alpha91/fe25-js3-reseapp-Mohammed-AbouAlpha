@@ -4,7 +4,7 @@ import CountryCard from "../components/CountryCards";
 import { useCountries } from "../hooks/useCountries";
 
 // Antal länder som visas på varje sida
-const COUNTRIES_PER_PAGE = 16;
+const COUNTRIES_PER_PAGE = 15;
 
 // Lista med regioner man kan välja mellan.
 // label är texten som visas på knappen.
