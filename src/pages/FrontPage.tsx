@@ -21,15 +21,16 @@ const regions = [
 export default function HomePage() {
   // Hämtar länder och information om laddning och fel
   const {
-    data: countries,
-    isPending,
-    isError,
-    refetch,
-  } = useCountries();
+  data: countries,
+  isPending,
+  isFetching,
+  isError,
+  refetch,
+} = useCountries();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Hämtar sökord och sidnummer från URL:en
+  // Hämtar sökord och sidnummer från URLen
   const query = searchParams.get("query") ?? "";
 
   // Hämtar vald region från URLen.
@@ -78,20 +79,20 @@ export default function HomePage() {
     setSearchParams(newParams);
   }
 
-  // Visas medan länderna hämtas
-  if (isPending) {
-    return (
-      <main className="p-8">
-        <div role="status" className="flex items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
-          />
-          <span>Laddar länder...</span>
-        </div>
-      </main>
-    );
-  }
+ // Visas medan länderna hämtas
+if (isPending || isFetching) {
+  return (
+    <main className="p-8">
+      <div role="status" className="flex items-center gap-3">
+        <span
+          aria-hidden="true"
+          className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
+        />
+        <span>Laddar länder...</span>
+      </div>
+    </main>
+  );
+}
 
   // Visas om hämtningen misslyckas
   if (isError) {
