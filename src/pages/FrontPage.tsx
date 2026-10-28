@@ -83,7 +83,7 @@ export default function HomePage() {
   // Visas medan länderna hämtas
   if (isPending || isFetching) {
     return (
-      <main className="p-8">
+      <main className="mx-auto w-full max-w-[1800px] px-6 py-8">
         <div role="status" className="flex items-center gap-3">
           <span
             aria-hidden="true"
@@ -98,7 +98,7 @@ export default function HomePage() {
   // Visas om hämtningen misslyckas
   if (isError) {
     return (
-      <main className="p-8">
+      <main className="mx-auto w-full max-w-[1800px] px-6 py-8">
         <p role="alert" className="mb-4 text-red-700">
           Kunde inte hämta länder.
         </p>
@@ -147,8 +147,8 @@ export default function HomePage() {
   );
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold text-[#1d3027]">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-8">
+      <h1 className="mb-4 text-3xl font-bold text-[#1d3027]">
         Utforska världens länder
       </h1>
 
@@ -186,7 +186,7 @@ export default function HomePage() {
       ) : (
         <>
           {/* Visar länderna på den aktuella sidan */}
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
             {currentCountries.map((country) => (
               <li key={country.alpha3Code} className="min-w-0">
                 <CountryCard country={country} />
