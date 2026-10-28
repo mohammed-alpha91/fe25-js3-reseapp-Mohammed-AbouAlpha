@@ -1,3 +1,4 @@
+
 import { useSearchParams } from "react-router";
 import SearchField from "../components/SearchField";
 import CountryCard from "../components/CountryCards";
@@ -21,12 +22,12 @@ const regions = [
 export default function HomePage() {
   // Hämtar länder och information om laddning och fel
   const {
-  data: countries,
-  isPending,
-  isFetching,
-  isError,
-  refetch,
-} = useCountries();
+    data: countries,
+    isPending,
+    isFetching,
+    isError,
+    refetch,
+  } = useCountries();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -79,33 +80,33 @@ export default function HomePage() {
     setSearchParams(newParams);
   }
 
- // Visas medan länderna hämtas
-if (isPending || isFetching) {
-  return (
-    <main className="p-8">
-      <div role="status" className="flex items-center gap-3">
-        <span
-          aria-hidden="true"
-          className="h-6 w-6 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
-        />
-        <span>Laddar länder...</span>
-      </div>
-    </main>
-  );
-}
+  // Visas medan länderna hämtas
+  if (isPending || isFetching) {
+    return (
+      <main className="p-8">
+        <div role="status" className="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className="h-6 w-6 animate-spin rounded-full border-4 border-[#28634b] border-t-transparent"
+          />
+          <span>Laddar länder...</span>
+        </div>
+      </main>
+    );
+  }
 
   // Visas om hämtningen misslyckas
   if (isError) {
     return (
       <main className="p-8">
-        <p role="alert" className="mb-4 text-red-600">
+        <p role="alert" className="mb-4 text-red-700">
           Kunde inte hämta länder.
         </p>
 
         <button
           type="button"
           onClick={() => void refetch()}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2"
+          className="rounded-lg bg-[#28634b] px-4 py-2 text-white transition hover:bg-[#1d4937] focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           Försök igen
         </button>
@@ -147,7 +148,7 @@ if (isPending || isFetching) {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-2 text-3xl font-bold">
+      <h1 className="mb-2 text-3xl font-bold text-[#1d3027]">
         Utforska världens länder
       </h1>
 
@@ -165,11 +166,11 @@ if (isPending || isFetching) {
             // Berättar för skärmläsare om knappen är vald.
             aria-pressed={region === item.value}
             //  Vald region blir blå, övriga knappar är vita.
-           className={`rounded-lg border px-4 py-2 ${
-  region === item.value
-    ? "border-purple-600 bg-purple-600 text-white"
-    : "border-gray-300 bg-white hover:bg-purple-50"
-}`}
+            className={`rounded-full border px-4 py-2 transition-colors ${
+              region === item.value
+                ? "border-[#28634b] bg-[#28634b] text-white"
+                : "border-[#d9dfd5] bg-white text-[#435348] hover:bg-[#e9eee6]"
+            }`}
           >
             {/* Visar knappens namn. */}
             {item.label}
@@ -179,7 +180,7 @@ if (isPending || isFetching) {
 
       {/* Visar ett meddelande om inget land matchar */}
       {filteredCountries.length === 0 ? (
-        <p className="text-gray-600">
+        <p className="text-[#687269]">
           Inga länder matchar dina kriterier
         </p>
       ) : (
@@ -199,12 +200,12 @@ if (isPending || isFetching) {
               type="button"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage <= 1}
-              className="rounded-lg border px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full border border-[#d9dfd5] bg-white px-4 py-2 text-[#30483a] transition hover:bg-[#e9eee6] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Föregående
             </button>
 
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-[#687269]">
               Sida {currentPage} av {totalPages}
             </span>
 
@@ -212,7 +213,7 @@ if (isPending || isFetching) {
               type="button"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage >= totalPages}
-              className="rounded-lg border px-4 py-2 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full border border-[#d9dfd5] bg-white px-4 py-2 text-[#30483a] transition hover:bg-[#e9eee6] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Nästa
             </button>
