@@ -22,9 +22,9 @@ export default function CountryCard({
       }}
       className="block h-full cursor-pointer"
     >
-      <article className="h-24 w-full min-w-0 overflow-hidden rounded-lg border border-[#e2e5dc] bg-white shadow-sm transition hover:border-[#28634b] hover:shadow-md">
+      <article className="h-44 w-full min-w-0 overflow-hidden rounded-lg border border-[#e2e5dc] bg-white shadow-sm transition hover:border-[#28634b] hover:shadow-md">
         {/* Visar landets flagga. */}
-        <div className="flex h-10 items-center justify-center bg-[#eeeee5] p-1">
+        <div className="flex h-20 items-center justify-center bg-[#eeeee5] p-3">
           <img
             src={country.flags.svg}
             alt={`Flagga för ${country.name}`}
@@ -33,16 +33,16 @@ export default function CountryCard({
         </div>
 
         {/* Visar landets namn, region och huvudstad. */}
-        <div className="overflow-hidden p-1">
-          <h2 className="truncate text-[10px] font-semibold text-[#1d3027]">
+        <div className="overflow-hidden p-3">
+          <h2 className="mb-2 truncate font-sans text-base font-semibold leading-tight text-[#1d3027]">
             {country.name}
           </h2>
 
-          <p className="truncate text-[9px] text-[#687269]">
+          <p className="mb-1 truncate text-sm text-[#687269]">
             Kontinent: {country.region}
           </p>
 
-          <p className="truncate text-[9px] text-[#687269]">
+          <p className="mb-0 truncate text-sm text-[#687269]">
             Huvudstad: {country.capital || "Saknas"}
           </p>
         </div>
