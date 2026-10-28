@@ -1,32 +1,105 @@
-# React + TypeScript + Vite
+# Travel App
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A responsive travel application built with React and TypeScript. The app lets users explore countries around the world and discover information about each country.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[Visit the Travel App](https://YOUR_GITHUB_USERNAME.github.io/fe25-js3-reseapp-Mohammed-AbouAlpha/)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Browse countries from around the world.
+- Search for countries by name.
+- Filter countries by region.
+- Navigate through countries using pagination.
+- View detailed information about a selected country.
+- See country flags, capitals and regions.
+- Check current weather information.
+- Read introductory information about countries from Wikipedia.
+- View images related to countries.
+- Responsive layout for different screen sizes.
 
-## Expanding the Oxlint configuration
+## Technologies
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- React
+- TypeScript
+- Vite
+- React Router
+- Tailwind CSS
+- shadcn/ui
+- TanStack Query
+- React Context
+- React Hook Form
+- Zod
+- REST APIs
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## APIs
+
+The application uses external APIs to retrieve country information, weather data and additional information about each country.
+
+- **REST Countries API** – country names, flags, capitals and regions.
+- **Weather API** – current weather information.
+- **Wikipedia API** – introductory text and images.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone YOUR_REPOSITORY_URL
+   ```
+
+2. Navigate to the project folder:
+
+   ```bash
+   cd YOUR_PROJECT_FOLDER
+   ```
+
+3. Install the dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open the local URL shown in your terminal.
+
+## Available Scripts
+
+- `npm run dev` – starts the development server.
+- `npm run build` – builds the application for production.
+- `npm run lint` – checks the code for linting issues, if configured.
+- `npm run preview` – previews the production build locally.
+
+## Project Structure
+
+```text
+src/
+├── components/    # Reusable UI components
+├── hooks/         # Custom React hooks
+├── pages/         # Application pages
+├── types/         # TypeScript types
+├── App.tsx        # Main application and routing
+├── main.tsx       # Application entry point
+└── index.css      # Global styles
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Purpose
+
+This project was created as part of a frontend development assignment. The goal is to practise using React, TypeScript, APIs, routing, data fetching and reusable components while building a responsive travel application.
+
+## Author
+
+Mohammed Abou Alpha
